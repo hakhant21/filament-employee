@@ -48,6 +48,7 @@ class CityResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('state.name')->sortable(),
                 Tables\Columns\TextColumn::make('name')
+                    ->sortable()
                     ->searchable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()

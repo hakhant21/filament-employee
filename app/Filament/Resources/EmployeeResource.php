@@ -38,6 +38,7 @@ class EmployeeResource extends Resource
                     ->required()
                     ->maxLength(255),
                 Forms\Components\Select::make('country_id')
+                    ->label('Country')
                     ->relationship('country', 'name')
                     ->searchable()
                     ->preload()
@@ -47,31 +48,34 @@ class EmployeeResource extends Resource
                     })
                     ->required(),
                 Forms\Components\Select::make('state_id')
-                ->options(function(Get $get) {
-                    return State::query()
-                        ->where('country_id', $get('country_id'))
-                        ->pluck('name', 'id')
-                        ->toArray();
-                })
-                ->searchable()
-                ->preload()
-                ->live()
-                ->afterStateUpdated(function(Set $set) {
-                    $set('city_id', null);
-                })
-                ->required(),
+                    ->label('State')
+                    ->options(function(Get $get) {
+                        return State::query()
+                            ->where('country_id', $get('country_id'))
+                            ->pluck('name', 'id')
+                            ->toArray();
+                    })
+                    ->searchable()
+                    ->preload()
+                    ->live()
+                    ->afterStateUpdated(function(Set $set) {
+                        $set('city_id', null);
+                    })
+                    ->required(),
                 Forms\Components\Select::make('city_id')
-                ->options(function(Get $get) {
-                    return City::query()
-                        ->where('state_id', $get('state_id'))
-                        ->pluck('name', 'id')
-                        ->toArray();
-                })
-                ->searchable()
-                ->preload()
-                ->live()
-                ->required(),
+                    ->label('City')
+                    ->options(function(Get $get) {
+                        return City::query()
+                            ->where('state_id', $get('state_id'))
+                            ->pluck('name', 'id')
+                            ->toArray();
+                    })
+                    ->searchable()
+                    ->preload()
+                    ->live()
+                    ->required(),
                 Forms\Components\Select::make('department_id')
+                    ->label('Department')
                     ->relationship('department', 'name')
                     ->required(),
                 Forms\Components\TextInput::make('zip_code')
@@ -95,22 +99,30 @@ class EmployeeResource extends Resource
             ->columns([
                 Tables\Columns\ImageColumn::make('photo'),
                 Tables\Columns\TextColumn::make('country.name')
+                    ->sortable()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('state.name')
+                    ->sortable()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('city.name')
+                    ->sortable()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('department.name')
-                    ->sortable(),
+                    ->sortable()
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('first_name')
+                    ->sortable()
                     ->searchable(),
                 Tables\Columns\TextColumn::make('last_name')
+                    ->sortable()
                     ->searchable(),
                 Tables\Columns\TextColumn::make('middle_name')
+                    ->sortable()
                     ->searchable(),
                 Tables\Columns\TextColumn::make('address')
                     ->html(),
                 Tables\Columns\TextColumn::make('zip_code')
+                    ->sortable()
                     ->searchable(),
                 Tables\Columns\TextColumn::make('date_of_birth')
                     ->date()
