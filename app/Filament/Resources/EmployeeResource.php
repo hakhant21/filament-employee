@@ -1,0 +1,160 @@
+<?php
+
+namespace App\Filament\Resources;
+
+use Filament\Forms;
+use App\Models\City;
+use Filament\Tables;
+use App\Models\State;
+use Filament\Forms\Get;
+use App\Models\Employee;
+use Filament\Forms\Form;
+use Filament\Tables\Table;
+use Filament\Resources\Resource;
+use Illuminate\Support\Collection;
+use Illuminate\Database\Eloquent\Builder;
+use App\Filament\Resources\EmployeeResource\Pages;
+use Illuminate\Database\Eloquent\SoftDeletingScope;
+use App\Filament\Resources\EmployeeResource\RelationManagers;
+use Filament\Forms\Set;
+
+class EmployeeResource extends Resource
+{
+    protected static ?string $model = Employee::class;
+
+    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+
+    public static function form(Form $form): Form
+    {
+        return $form
+            ->schema([
+                Forms\Components\TextInput::make('first_name')
+                    ->required()
+                    ->maxLength(255),
+                Forms\Components\TextInput::make('last_name')
+                    ->required()
+                    ->maxLength(255),
+                Forms\Components\TextInput::make('middle_name')
+                    ->required()
+                    ->maxLength(255),
+                Forms\Components\Select::make('country_id')
+                    ->relationship('country', 'name')
+                    ->searchable()
+                    ->preload()
+                    ->live()
+                    ->afterStateUpdated(function(Set $set) {
+                        $set('state_id', null);
+                    })
+                    ->required(),
+                Forms\Components\Select::make('state_id')
+                ->options(function(Get $get) {
+                    return State::query()
+                        ->where('country_id', $get('country_id'))
+                        ->pluck('name', 'id')
+                        ->toArray();
+                })
+                ->searchable()
+                ->preload()
+                ->live()
+                ->afterStateUpdated(function(Set $set) {
+                    $set('city_id', null);
+                })
+                ->required(),
+                Forms\Components\Select::make('city_id')
+                ->options(function(Get $get) {
+                    return City::query()
+                        ->where('state_id', $get('state_id'))
+                        ->pluck('name', 'id')
+                        ->toArray();
+                })
+                ->searchable()
+                ->preload()
+                ->live()
+                ->required(),
+                Forms\Components\Select::make('department_id')
+                    ->relationship('department', 'name')
+                    ->required(),
+                Forms\Components\TextInput::make('zip_code')
+                    ->required()
+                    ->maxLength(255),
+                Forms\Components\DatePicker::make('date_of_birth')
+                    ->required(),
+                Forms\Components\DatePicker::make('date_of_hired')
+                    ->required(),
+                Forms\Components\RichEditor::make('address')
+                    ->required()
+                    ->columnSpanFull(),
+                Forms\Components\FileUpload::make('photo')
+                    ->columnSpanFull(),
+            ]);
+    }
+
+    public static function table(Table $table): Table
+    {
+        return $table
+            ->columns([
+                Tables\Columns\ImageColumn::make('photo'),
+                Tables\Columns\TextColumn::make('country.name')
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('state.name')
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('city.name')
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('department.name')
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('first_name')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('last_name')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('middle_name')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('address')
+                    ->html(),
+                Tables\Columns\TextColumn::make('zip_code')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('date_of_birth')
+                    ->date()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('date_of_hired')
+                    ->date()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('created_at')
+                    ->dateTime()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('updated_at')
+                    ->dateTime()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+            ])
+            ->filters([
+                //
+            ])
+            ->actions([
+                Tables\Actions\ViewAction::make(),
+                Tables\Actions\EditAction::make(),
+            ])
+            ->bulkActions([
+                Tables\Actions\BulkActionGroup::make([
+                    Tables\Actions\DeleteBulkAction::make(),
+                ]),
+            ]);
+    }
+
+    public static function getRelations(): array
+    {
+        return [
+            //
+        ];
+    }
+
+    public static function getPages(): array
+    {
+        return [
+            'index' => Pages\ListEmployees::route('/'),
+            'create' => Pages\CreateEmployee::route('/create'),
+            'view' => Pages\ViewEmployee::route('/{record}'),
+            'edit' => Pages\EditEmployee::route('/{record}/edit'),
+        ];
+    }
+}
