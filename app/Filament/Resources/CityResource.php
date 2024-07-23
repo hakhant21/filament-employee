@@ -34,6 +34,7 @@ class CityResource extends Resource
             ->schema([
                 Forms\Components\Select::make('state_id')
                     ->relationship('state', 'name')
+                    ->searchable()
                     ->reactive()
                     ->required(),
                 Forms\Components\TextInput::make('name')
@@ -46,7 +47,9 @@ class CityResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('state.name')->sortable(),
+                Tables\Columns\TextColumn::make('state.name')
+                    ->sortable()
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('name')
                     ->sortable()
                     ->searchable(),
