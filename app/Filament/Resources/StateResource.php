@@ -36,6 +36,7 @@ class StateResource extends Resource
                 Forms\Components\Select::make('country_id')
                     ->relationship('country', 'name')
                     ->reactive()
+                    ->searchable()
                     ->required(),
                 Forms\Components\TextInput::make('name')
                     ->required()
@@ -47,8 +48,11 @@ class StateResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('country.name')->sortable(),
+                Tables\Columns\TextColumn::make('country.name')
+                    ->sortable()
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('name')
+                    ->sortable()
                     ->searchable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
