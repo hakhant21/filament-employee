@@ -17,12 +17,14 @@ return new class extends Migration
             $table->foreignId('state_id')->constrained()->cascadeOnDelete();
             $table->foreignId('city_id')->constrained()->cascadeOnDelete();
             $table->foreignId('department_id')->constrained()->cascadeOnDelete();
-            $table->string('first_name');
-            $table->string('last_name');
-            $table->string('middle_name');
+            $table->string('fullname');
+            $table->string('gender');
             $table->string('photo')->nullable();
             $table->string('address');
-            $table->char('zip_code');
+            $table->bigInteger('phone');
+            $table->string('email')->unique();
+            $table->string('job_title');
+            $table->bigInteger('salary');
             $table->date('date_of_birth');
             $table->date('date_of_hired');
             $table->timestamps();

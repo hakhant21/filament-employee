@@ -30,15 +30,15 @@ class EmployeeResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('first_name')
+                Forms\Components\TextInput::make('fullname')
                     ->required()
                     ->maxLength(255),
-                Forms\Components\TextInput::make('last_name')
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('middle_name')
-                    ->required()
-                    ->maxLength(255),
+                Forms\Components\Select::make('gender')
+                    ->options([
+                        'Male' => 'Male',
+                        'Female' => 'Female',
+                        'Other' => 'Other',
+                    ]),
                 Forms\Components\Select::make('country_id')
                     ->label('Country')
                     ->relationship('country', 'name')
@@ -80,12 +80,20 @@ class EmployeeResource extends Resource
                     ->label('Department')
                     ->relationship('department', 'name')
                     ->required(),
-                Forms\Components\TextInput::make('zip_code')
-                    ->required()
-                    ->maxLength(255),
                 Forms\Components\DatePicker::make('date_of_birth')
                     ->required(),
                 Forms\Components\DatePicker::make('date_of_hired')
+                    ->required(),
+                Forms\Components\TextInput::make('job_title')
+                    ->required(),
+                Forms\Components\TextInput::make('salary')
+                    ->numeric()
+                    ->minValue(0)
+                    ->required(),
+                Forms\Components\TextInput::make('email')
+                    ->email()
+                    ->required(),
+                Forms\Components\TextInput::make('phone')
                     ->required(),
                 Forms\Components\RichEditor::make('address')
                     ->required()
@@ -100,11 +108,13 @@ class EmployeeResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\ImageColumn::make('photo'),
-                Tables\Columns\TextColumn::make('Name')
-                    ->label('Name')
-                    ->getStateUsing(function (Employee $record) {
-                        return $record->first_name . ' ' . $record->middle_name . ' ' . $record->last_name;
-                    }),
+                Tables\Columns\TextColumn::make('fullname')
+                    ->sortable()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('gender')
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('job_title')
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('country.name')
                     ->sortable()
                     ->sortable(),
@@ -119,14 +129,17 @@ class EmployeeResource extends Resource
                     ->searchable(),
                 Tables\Columns\TextColumn::make('address')
                     ->html(),
-                Tables\Columns\TextColumn::make('zip_code')
-                    ->sortable()
-                    ->searchable(),
+                Tables\Columns\TextColumn::make('email')
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('phone')
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('date_of_birth')
                     ->date()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('date_of_hired')
                     ->date()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('salary')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()

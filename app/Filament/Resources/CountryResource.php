@@ -26,7 +26,7 @@ class CountryResource extends Resource
 
     protected static ?int $navigationSort = 1;
 
-    protected static ?string $modelLabel = 'Employees Countries';
+    protected static ?string $modelLabel = 'Countries';
 
 
     public static function form(Form $form): Form
