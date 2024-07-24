@@ -98,6 +98,11 @@ class EmployeeResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\ImageColumn::make('photo'),
+                Tables\Columns\TextColumn::make('Name')
+                    ->label('Name')
+                    ->getStateUsing(function (Employee $record) {
+                        return $record->first_name . ' ' . $record->middle_name . ' ' . $record->last_name;
+                    }),
                 Tables\Columns\TextColumn::make('country.name')
                     ->sortable()
                     ->sortable(),
@@ -108,15 +113,6 @@ class EmployeeResource extends Resource
                     ->sortable()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('department.name')
-                    ->sortable()
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('first_name')
-                    ->sortable()
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('last_name')
-                    ->sortable()
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('middle_name')
                     ->sortable()
                     ->searchable(),
                 Tables\Columns\TextColumn::make('address')
