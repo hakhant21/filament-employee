@@ -19,6 +19,8 @@ class DatabaseSeeder extends Seeder
             StatesTableSeeder::class,
             CitiesTableSeeder::class,
             DepartmentsTableSeeder::class,
+            EmployeesTableSeeder::class,
+            AttendancesTableSeeder::class,
         ]);
     }
 }

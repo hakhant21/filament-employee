@@ -16,8 +16,8 @@ return new class extends Migration
             $table->foreignId('employee_id')->constrained();
             $table->date('start_date');
             $table->date('end_date');
-            $table->string('leave_type');
-            $table->string('status');
+            $table->enum('leave_type', ['Sick', 'Casual', 'Paid']);
+            $table->enum('status', ['Approved', 'Pending', 'Rejected']);
             $table->timestamps();
         });
     }

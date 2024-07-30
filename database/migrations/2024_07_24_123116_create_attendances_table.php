@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('employee_id')->constrained();
             $table->date('date');
-            $table->string('status');
+            $table->enum('status', ['Present', 'Absent']);
             $table->timestamps();
         });
     }

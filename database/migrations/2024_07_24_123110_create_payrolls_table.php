@@ -15,9 +15,10 @@ return new class extends Migration
             $table->id();
             $table->foreignId('employee_id')->constrained();
             $table->bigInteger('salary');
-            $table->bigInteger('bonus');
-            $table->bigInteger('deductions');
-            $table->date('pay_date');
+            $table->bigInteger('bonus')->default(10);
+            $table->bigInteger('deductions')->nullable();
+            $table->bigInteger('net_pay')->nullable();
+            $table->date('pay_date')->nullable();
             $table->timestamps();
         });
     }
